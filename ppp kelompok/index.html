@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <script type="module">
+import { createHotContext } from "/@vite/client";
+const hot = createHotContext("/__dummy__runtime-error-plugin");
+
+function sendError(error) {
+  if (!(error instanceof Error)) {
+    error = new Error("(unknown runtime error)");
+  }
+  const serialized = {
+    message: error.message,
+    stack: error.stack,
+  };
+  hot.send("runtime-error-plugin:error", serialized);
+}
+
+// Only notify the parent frame after the server confirms the error passed
+// the filter and the overlay will be shown.
+hot.on("runtime-error-plugin:notify-parent", () => {
+  try {
+    window.parent.postMessage({ type: "runtime-error", id: null }, "*");
+  } catch (_) {}
+});
+
+window.addEventListener("error", (evt) => {
+  sendError(evt.error);
+});
+
+window.addEventListener("unhandledrejection", (evt) => {
+  sendError(evt.reason);
+});
+</script>
+
+  <script type="module" src="/@vite/client"></script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StudySched – Login</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="login-body">
+  <div class="login-bg">
+    <div class="login-bg-overlay"></div>
+    <div class="floating-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+      <div class="shape shape-4"></div>
+    </div>
+  </div>
+
+  <div class="login-container">
+    <div class="login-left">
+      <div class="login-brand">
+        <div class="brand-logo">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <h1 class="brand-name">StudySched</h1>
+        <p class="brand-tagline">Student Schedule Management System</p>
+      </div>
+      <div class="login-features">
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
+          <div class="feature-text">
+            <h4>Jadwal Terorganisir</h4>
+            <p>Kelola semua jadwal kuliah dalam satu tempat</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-tasks"></i></div>
+          <div class="feature-text">
+            <h4>Manajemen Tugas</h4>
+            <p>Pantau progress tugas dan deadline dengan mudah</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-bell"></i></div>
+          <div class="feature-text">
+            <h4>Pengingat Pintar</h4>
+            <p>Notifikasi otomatis untuk ujian dan tugas penting</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-chart-bar"></i></div>
+          <div class="feature-text">
+            <h4>Nilai & Akademik</h4>
+            <p>Pantau nilai, transkrip, dan informasi akademik</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-right">
+      <div class="login-card">
+        <div class="login-header">
+          <div class="login-logo-sm">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <h2>Selamat Datang</h2>
+          <p>Masuk ke akun StudySched Anda</p>
+        </div>
+
+        <form class="login-form" id="loginForm">
+          <div class="form-group">
+            <label for="email"><i class="fas fa-envelope"></i> Email</label>
+            <input type="email" id="email" placeholder="nama@kampus.ac.id" required autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="password"><i class="fas fa-lock"></i> Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="password" placeholder="Masukkan password Anda" required autocomplete="current-password" />
+              <button type="button" class="toggle-password" id="toggleBtn">
+                <i class="fas fa-eye" id="eyeIcon"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-options">
+            <label class="checkbox-label">
+              <input type="checkbox" id="remember" />
+              Ingat saya
+            </label>
+            <a href="#" class="forgot-link" onclick="alert('Silakan hubungi admin untuk reset password.'); return false;">Lupa password?</a>
+          </div>
+
+          <button type="submit" class="btn-login" id="loginBtn">
+  <span id="btnText">Masuk ke Sistem</span>
+  <i class="fas fa-arrow-right"></i>
+</button>
+
+<div class="register-link">
+  <p>Belum punya akun?
+    <a href="register.html">Daftar Sekarang</a>
+  </p>
+</div>
+        </form>
+
+        <div class="login-footer-text">
+          <p>StudySched &copy; 2026 &ndash; Student Schedule Management System</p>
+          <p class="developer">Developed by Aditya Putra Pratama</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+<script src="https://replit-cdn.com/replit-pill/replit-pill.global.js" data-repl-id="60ed25ef-56c5-417f-a22a-a394454af9f1"></script></body>
+</html>
